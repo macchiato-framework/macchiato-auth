@@ -5,7 +5,7 @@
     [macchiato.auth.http :refer [find-header]]
     [macchiato.auth.protocols :as proto]))
 
-(def jwt (node/require "jsonwebtoken"))
+(def ^:private jwt (node/require "jsonwebtoken"))
 
 (defn- handle-unauthorized-default
   "A default response constructor for an unauthorized request."

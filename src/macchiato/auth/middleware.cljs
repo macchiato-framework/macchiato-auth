@@ -16,15 +16,17 @@
     (assoc request :identity authdata)))
 
 (defn wrap-authentication
-  "Ring middleware that enables authentication for your ring
+  "Ring middleware that enables authentication for your Macchiato
   handler. When multiple `backends` are given each of them gets a
   chance to authenticate the request."
   [handler & backends]
-  (fn [request respond raise]
-    (handler
-      (apply authentication-request request backends)
-      respond
-      raise)))
+  (if (empty? backends)
+    handler
+    (fn [request respond raise]
+      (handler
+        (apply authentication-request request backends)
+        respond
+        raise))))
 
 
 (defn- fn->authorization-backend
@@ -63,7 +65,7 @@
 
 (defn wrap-authorization
   "Macchiato middleware that enables authorization
-  workflow for your ring handler.
+  workflow for your Macchiato handler.
   The `backend` parameter should be a plain function
   that accepts two parameters: request and errordata
   hashmap, or an instance that satisfies IAuthorization

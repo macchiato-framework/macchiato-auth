@@ -39,3 +39,4 @@
           {:status  401
            :headers {"WWW-Authenticate" (str "Basic realm=\"" realm "\"")}
            :body    "Unauthorized"})))))
+;vZi2PNd0A33g
