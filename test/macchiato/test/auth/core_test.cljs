@@ -79,6 +79,9 @@
         (is (= ((mw/wrap-authentication auth-handler) request identity identity)
                request))))))
 
+(defn request [uri method]
+  {:uri uri
+   :method method})
 
 (defn basic-auth-request [uri method]
   {:uri     uri
@@ -90,16 +93,23 @@
    :method  method
    :session session})
 
-#_(deftest basic-backend-test
-    (let [handler (mw/wrap-authentication
-                    (fn [req res raise]
-                      (println "got req" req)
-                      (res req))
-                    (basic/http-basic-backend
-                      {:authfn (fn [_] true)}))]
-      (handler (basic-auth-request "/" :post)
-               identity
-               identity)))
+(deftest basic-backend-test
+  (let [handler (mw/wrap-authentication
+                 (fn [req res raise]
+                   (println "got req" req)
+                   (res req))
+                 (basic/http-basic-backend
+                  {:authfn (fn [_] true)}))]
+    (testing "With authorization header"
+      (let [response (handler (basic-auth-request "/" :post)
+                              identity
+                              identity)]
+        (is (= true (:identity response)))))
+    (testing "Without authorization header"
+      (let [response (handler (request "/" :post)
+                              identity
+                              identity)]
+        (is (= nil (:identity response)))))))
 
 #_(deftest session-backend-test
     (let [handler (mw/wrap-authentication

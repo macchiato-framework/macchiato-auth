@@ -14,9 +14,10 @@
                          (re-find pattern)
                          (second)
                          (b64/decodeString))]
-    (when-let [[username password] (s/split decoded #":" 2)]
-      {:username username
-       :password password})))
+    (when decoded
+      (when-let [[username password] (s/split decoded #":" 2)]
+        {:username username
+         :password password}))))
 
 (defn http-basic-backend
   [{:keys [realm authfn unauthorized-handler] :or {realm "Macchiato Auth"}}]
