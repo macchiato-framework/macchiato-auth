@@ -1,4 +1,4 @@
-(defproject macchiato/auth "0.0.2"
+(defproject macchiato/auth "0.0.3"
   :description "a library that provides authentication and authorization facilities"
   :url "https://github.com/yogthos/macchiato-framework/macchiato-auth"
   :scm {:name "git"
@@ -13,8 +13,8 @@
             [lein-npm "0.6.2"]
             [lein-cljsbuild "1.1.4"]]
 
-  :npm {:dependencies [[bcrypt "1.0.2"]
-                       [scrypt "6.0.3"]]}
+  ;:npm {:dependencies [[bcrypt "1.0.2"]
+  ;                     [scrypt "6.0.3"]]}
   :profiles {:test
              {:cljsbuild
                    {:builds
