@@ -58,7 +58,7 @@
           (->> (:macchiato.auth/payload data)
                (proto/-handle-unauthorized backend request))
           (raise e)))
-      (if (satisfies? proto/IAuthorizationdError e)
+      (if (satisfies? proto/IAuthorizationError e)
         (->> (proto/-get-error-data e)
              (proto/-handle-unauthorized backend request))
         (raise e)))))
