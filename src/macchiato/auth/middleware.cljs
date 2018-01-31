@@ -45,7 +45,8 @@
   The `backend` parameter should be a plain function
   that accepts two parameters: request and errordata hashmap,
   or an instance that satisfies IAuthorization protocol."
-  [request e backend raise]
+  #_[request e backend raise]
+  [e backend request respond raise]
   (let [backend (cond
                   (fn? backend)
                   (fn->authorization-backend backend)
@@ -56,7 +57,8 @@
       (let [data (ex-data e)]
         (if (= (:macchiato.auth/type data) :macchiato.auth/unauthorized)
           (->> (:macchiato.auth/payload data)
-               (proto/-handle-unauthorized backend request))
+               (proto/-handle-unauthorized backend request)
+               (respond))
           (raise e)))
       (if (satisfies? proto/IAuthorizationError e)
         (->> (proto/-get-error-data e)
@@ -75,4 +77,6 @@
     (handler
       request
       respond
-      #(authorization-error request % backend raise))))
+      (fn [e]
+        (authorization-error e backend request respond raise))
+      #_(authorization-error request % backend raise))))
