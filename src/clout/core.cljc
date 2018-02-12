@@ -70,7 +70,7 @@
        (let [path-info (if absolute?
                          (request-url request)
                          (path-info request))]
-         (if (re-matches re path-info)
+         (if (.test re path-info)
            (assoc-keys-with-groups (re-groups* re path-info) keys)))))
   #?@(:clj [Object
             (toString [_] source)]))
@@ -126,7 +126,7 @@
 
 (defn- route-regex [parse-tree regexs]
   (insta/transform
-    {:route    (comp re-pattern str)
+    {:route    (comp re-pattern #?(:clj str :cljs #(str "^" % "$")))
      :scheme   #(if (= % "//") "https?://" %)
      :literal  re-escape
      :escaped  #(re-escape (subs % 1))
