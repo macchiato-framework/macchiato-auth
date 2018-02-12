@@ -1,4 +1,4 @@
-(defproject macchiato/auth "0.0.6"
+(defproject macchiato/auth "0.0.7"
   :description "a library that provides authentication and authorization facilities"
   :url "https://github.com/yogthos/macchiato-framework/macchiato-auth"
   :scm {:name "git"

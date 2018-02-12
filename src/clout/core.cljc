@@ -66,18 +66,32 @@
   #?@(:clj [Object
             (toString [_] source)]))
 
-(def ^:private route-parser
-  (insta/parser
-    "route    = (scheme / part) part*
-     scheme   = #'(https?:)?//'
-     <part>   = literal | escaped | wildcard | param
-     literal  = #'(:[^\\p{L}_*{}\\\\]|[^:*{}\\\\])+'
-     escaped  = #'\\\\.'
-     wildcard = '*'
-     param    = key pattern?
-     key      = <':'> #'([\\p{L}_][\\p{L}_0-9-]*)'
-     pattern  = '{' (#'(?:[^{}\\\\]|\\\\.)+' | pattern)* '}'"
-    :no-slurp true))
+#?(:clj
+   (def ^:private route-parser
+     (insta/parser
+       "route    = (scheme / part) part*
+        scheme   = #'(https?:)?//'
+        <part>   = literal | escaped | wildcard | param
+        literal  = #'(:[^\\p{L}_*{}\\\\]|[^:*{}\\\\])+'
+        escaped  = #'\\\\.'
+        wildcard = '*'
+        param    = key pattern?
+        key      = <':'> #'([\\p{L}_][\\p{L}_0-9-]*)'
+        pattern  = '{' (#'(?:[^{}\\\\]|\\\\.)+' | pattern)* '}'"
+       :no-slurp true))
+   :cljs
+   (def ^:private route-parser
+     (insta/parser
+       "route    = (scheme / part) part*
+        scheme   = #'(https?:)?//'
+        <part>   = literal | escaped | wildcard | param
+        literal  = #'(:[^a-z_*{}\\\\]|[^:*{}\\\\])+'
+        escaped  = #'\\\\.'
+        wildcard = '*'
+        param    = key pattern?
+        key      = <':'> #'([a-z_][a-z_0-9-]*)'
+        pattern  = '{' (#'(?:[^{}\\\\]|\\\\.)+' | pattern)* '}'"
+       :no-slurp true)))
 
 (defn- parse [parser text]
   (let [result (insta/parse parser text)]
@@ -131,7 +145,7 @@
        (vec ks)
        (absolute-url? path)))))
 
-(extend-type string
+(extend-type #?(:clj String :cljs string)
   Route
   (route-matches [route request]
     (route-matches (route-compile route) request)))
