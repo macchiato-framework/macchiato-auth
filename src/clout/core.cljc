@@ -17,7 +17,7 @@
    :cljs
    (defn re-groups*
      [re s]
-     (rest (re-seq re s))))
+     (-> (re-seq re s) flatten rest)))
 
 (defn- assoc-conj [m k v]
   (assoc m k
