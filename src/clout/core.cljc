@@ -126,7 +126,7 @@
 
 (defn- route-regex [parse-tree regexs]
   (insta/transform
-    {:route    (comp re-pattern #?(:clj str :cljs #(str "^" % "$")))
+    {:route    (comp re-pattern #?(:cljs #(str "^" % "$")) str)
      :scheme   #(if (= % "//") "https?://" %)
      :literal  re-escape
      :escaped  #(re-escape (subs % 1))
