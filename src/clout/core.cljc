@@ -6,8 +6,17 @@
 
 (def ^:private re-chars (set "\\.*+|?()[]{}$^"))
 
-(defn- re-escape [s]
-  (string/escape s #(if (re-chars %) (str \\ %))))
+
+#?(:clj
+   (defn- re-escape [s]
+     (string/escape s #(if (re-chars %) (str \\ %))))
+   :cljs
+   (defn- re-escape [s]
+     (let [keys (seq re-chars) vals (->> keys (map #(str "\\" %)))
+           cmap (zipmap keys vals)]
+       (string/escape s cmap))
+     ))
+
 
 #?(:clj
    (defn- re-groups*
