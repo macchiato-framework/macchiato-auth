@@ -22,7 +22,7 @@
                         exception is intercepted by authorization wrapper.
                         It should return a valid ring response."))
 
-(defprotocol IAuthorizationdError
+(defprotocol IAuthorizationError
   "Abstraction that allows the user to extend the exception
   based authorization system with own types."
   (-get-error-data [_] "Ger error information."))

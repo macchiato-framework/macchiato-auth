@@ -2,6 +2,7 @@
   (:require
     [macchiato.auth :as auth]
     [macchiato.auth.middleware :as mw]
+    [macchiato.auth.accessrules :as ar]
     [macchiato.auth.backends.basic :as basic]
     [macchiato.auth.backends.session :as session]
     [cljs.test :refer-macros [is are deftest testing use-fixtures]]
@@ -17,7 +18,13 @@
     (-authenticate [_ request data]
       (assert data)
       (when (= data secret)
-        :valid))))
+        :valid))
+
+    proto/IAuthorization
+    (-handle-unauthorized [_ request metadata]
+      (if (auth/authenticated? request)
+        ::permission-denied
+        ::unauthorized))))
 
 (defn auth-handler [req res raise]
   (res req))
@@ -121,3 +128,60 @@
                                      {:foo :bar})
                identity
                identity)))
+
+(deftest access-rules
+  (testing "Access rules"
+    (let [admin-access (fn [req] (true? (::admin req)))
+          rules [{:pattern #"^/public/.*"
+                  :handler (constantly true)}
+                 {:pattern #"^/secured/.*"
+                  :handler auth/authenticated?}
+                 {:pattern #"^/admin/.*"
+                  :handler admin-access}]
+
+          backend (auth-backend ::ok ::authdata)
+          reject-policy-handler
+          (-> auth-handler
+              (ar/wrap-access-rules {:rules rules :policy :reject})
+              (mw/wrap-authorization backend)
+              (mw/wrap-authentication backend))
+          allow-policy-handler
+          (-> auth-handler
+              (ar/wrap-access-rules {:rules rules :policy :allow})
+              (mw/wrap-authorization backend)
+              (mw/wrap-authentication backend))
+          public
+          (reject-policy-handler {:uri            "/public/files"
+                                  :request-method :get}
+                                 identity identity)
+          unauthorized
+          (reject-policy-handler {:uri            "/secured/files"
+                                  :request-method :get}
+                                 identity identity)
+          permission-denied
+          (reject-policy-handler {:uri            "/admin/files"
+                                  :request-method :get
+                                  ::authdata      ::ok}
+                                 identity identity)
+          permission-granted
+          (reject-policy-handler {:uri            "/admin/files"
+                                  :request-method :get
+                                  ::admin         true}
+                                 identity identity)
+          rejected-because-of-policy
+          (reject-policy-handler {:uri            "/path/that/does/not/match/to/anything"
+                                  :request-method :get}
+                                 identity identity)
+          allowed-because-of-policy
+          (allow-policy-handler {:uri            "/path/that/does/not/match/to/anything"
+                                 :request-method :post}
+                                identity identity)
+          ]
+      (is (= "/public/files" (:uri public)))
+      (is (= ::unauthorized unauthorized))
+      (is (= ::permission-denied permission-denied))
+      (is (= "/admin/files" (:uri permission-granted)))
+      (is (= ::unauthorized rejected-because-of-policy))
+      (is (and (= "/path/that/does/not/match/to/anything" (:uri allowed-because-of-policy))
+               (= :post (:request-method allowed-because-of-policy))))
+      )))

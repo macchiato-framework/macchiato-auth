@@ -1,4 +1,4 @@
-(defproject macchiato/auth "0.0.2"
+(defproject macchiato/auth "0.0.10"
   :description "a library that provides authentication and authorization facilities"
   :url "https://github.com/yogthos/macchiato-framework/macchiato-auth"
   :scm {:name "git"
@@ -7,14 +7,16 @@
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
   :clojurescript? true
   :dependencies [[org.clojure/clojure "1.8.0" :scope "provided"]
-                 [org.clojure/clojurescript "1.9.456" :scope "provided"]]
+                 [org.clojure/clojurescript "1.10.191" :scope "provided"]
+                 [macchiato/core "0.2.10"]
+                 [instaparse "1.4.8"]]
   :plugins [[codox "0.6.4"]
             [lein-doo "0.1.7"]
             [lein-npm "0.6.2"]
             [lein-cljsbuild "1.1.4"]]
 
-  :npm {:dependencies [[bcrypt "1.0.2"]
-                       [scrypt "6.0.3"]]}
+  ;:npm {:dependencies [[bcrypt "1.0.2"]
+  ;                     [scrypt "6.0.3"]]}
   :profiles {:test
              {:cljsbuild
                    {:builds
