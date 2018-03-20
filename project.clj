@@ -7,7 +7,7 @@
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
   :clojurescript? true
   :dependencies [[org.clojure/clojure "1.8.0" :scope "provided"]
-                 [org.clojure/clojurescript "1.9.456" :scope "provided"]
+                 [org.clojure/clojurescript "1.10.191" :scope "provided"]
                  [macchiato/core "0.2.10"]
                  [instaparse "1.4.8"]]
   :plugins [[codox "0.6.4"]
