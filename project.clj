@@ -9,7 +9,7 @@
   :dependencies [[org.clojure/clojure "1.8.0" :scope "provided"]
                  [org.clojure/clojurescript "1.10.191" :scope "provided"]
                  [macchiato/core "0.2.10"]
-                 [instaparse "1.4.8"]]
+                 [clout "2.2.0"]]
   :plugins [[codox "0.6.4"]
             [lein-doo "0.1.7"]
             [lein-npm "0.6.2"]
