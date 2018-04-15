@@ -12,11 +12,16 @@
                  [clout "2.2.0"]]
   :plugins [[codox "0.6.4"]
             [lein-doo "0.1.7"]
-            [lein-npm "0.6.2"]
+            [macchiato/lein-npm "0.6.6"]
             [lein-cljsbuild "1.1.4"]]
-
-  ;:npm {:dependencies [[bcrypt "1.0.2"]
-  ;                     [scrypt "6.0.3"]]}
+  :npm {:name "@macchiato/auth"
+        :write-package-json true
+        :private false
+        :directories {:lib "src"}
+        :files ["src/*"]
+        :author {:name "Dmitri Sotnikov"
+                 :email "dmitri.sotnikov@gmail.com"
+                 :url "http://yogthos.net/"}}
   :profiles {:test
              {:cljsbuild
                    {:builds
