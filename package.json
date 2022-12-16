@@ -23,7 +23,7 @@
     "cookies": "0.7.1",
     "etag": "1.8.1",
     "lru": "3.1.0",
-    "qs": "6.5.1",
+    "qs": "6.5.3",
     "content-type": "1.0.4",
     "url": "0.11.0",
     "simple-encryptor": "1.1.1",
